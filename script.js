@@ -1,15 +1,48 @@
+const quoteText = document.getElementById("quote-text");
+const author = document.getElementById("author");
+const xbutton = document.getElementById("xbutton");
+const button = document.getElementById("new-quote");
+
 // get the quote api
 let apiQuotes = [];
 function newQuote() {
   const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
   console.log(quote);
+  // check the text list to determine styling
+  if (quote.text.length > 120) {
+    quoteText.classList.add("long-quote");
+  } else {
+    quoteText.classList.remove("long-quote");
+  }
+  quoteText.textContent = quote.text;
+
+  // if there is no author name we replace it with unknown
+  if (!quote.author) {
+    author.textContent = "Unknown";
+  } else {
+    author.textContent = quote.author;
+  }
 }
 
 async function getQuote() {
-  const res = await axios.get("https://dummyjson.com/quotes");
+  const res = await axios.get(
+    "https://jacintodesign.github.io/quotes-api/data/quotes.json"
+  );
 
-  apiQuotes = res.data.quotes;
+  apiQuotes = res.data;
 
-  return newQuote();
+  newQuote();
 }
 getQuote().catch((err) => console.log(`error: ${err}`));
+//  https://dummyjson.com/quotes
+
+// post to x
+function postToX() {
+  const url = `https://twitter.com/intent/tweet?text=${quoteText.textContent} -${author.textContent}`;
+
+  window.open(url);
+}
+
+// event listeners
+xbutton.addEventListener("click", postToX);
+button.addEventListener("click", newQuote);
