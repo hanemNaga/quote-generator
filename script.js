@@ -2,10 +2,22 @@ const quoteText = document.getElementById("quote-text");
 const author = document.getElementById("author");
 const xbutton = document.getElementById("xbutton");
 const button = document.getElementById("new-quote");
+const loader = document.getElementById("loader");
+const container = document.getElementById("quote-container");
+
+function loading() {
+  loader.hidden = false;
+  container.hidden = true;
+}
+function complete() {
+  loader.hidden = true;
+  container.hidden = false;
+}
 
 // get the quote api
 let apiQuotes = [];
 function newQuote() {
+  loading();
   const quote = apiQuotes[Math.floor(Math.random() * apiQuotes.length)];
   console.log(quote);
   // check the text list to determine styling
@@ -22,9 +34,11 @@ function newQuote() {
   } else {
     author.textContent = quote.author;
   }
+  complete();
 }
 
 async function getQuote() {
+  loading();
   const res = await axios.get(
     "https://jacintodesign.github.io/quotes-api/data/quotes.json"
   );
